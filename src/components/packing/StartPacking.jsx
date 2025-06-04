@@ -31,11 +31,12 @@ const StartPacking = ({ onSuccess = () => {} }) => {
   const [packing, setPacking] = useState(null);
   const [stock, setStock] = useState(null);
   const [estimateList, setEstimateList] = useState(null);
+  const initialCase=nextCaseNumber;
 
   const disable = ["case_no_end", "total_box", "cbm"];
   const passedData = useMemo(() => location.state || {}, [location.state]);
   useEffect(()=>{
-    setForm((prev) => ({ ...prev, case_no_start: nextCaseNumber.toString() }));
+    setForm((prev) => ({ ...prev, case_no_start: initialCase.toString() }));
   },[])
 
   useEffect(() => {
