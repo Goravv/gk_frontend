@@ -3,7 +3,7 @@ import DataTable from "./DataTable";
 import SearchDelete from "./SearchDelete";
 import UploadBox from "./UploadBox";
 import API from "../../api";
-
+import Navbar from "../Navbar";
 export default function MRP() {
   const [data, setData] = useState([]);
 
@@ -23,7 +23,8 @@ export default function MRP() {
     fetchAll();
   }, []);
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className=" mx-auto p-6">
+      <Navbar />
       <h1 className="text-3xl font-bold mb-4 text-center">
         Excel Item Manager
       </h1>

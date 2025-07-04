@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-const Navbar = () => {
+const Navbar2 = () => {
   const linkStyle = {
     padding: '10px 15px',
     textDecoration: 'none',
@@ -30,7 +30,7 @@ const Navbar = () => {
         backgroundColor: '#f0f0f0',
       }}
     >
-      {[ 'Home','MRP_List','Stock-List', 'client','about','contact'].map((text) => (
+      {[ 'Home', 'orderitem','Estimate','packing'].map((text) => (
         <NavLink
           key={text}
           to={text === 'Home' ? '/' : `/${text.toLowerCase()}`}
@@ -60,4 +60,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Navbar2;

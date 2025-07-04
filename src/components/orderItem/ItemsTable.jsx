@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../../api";
+import { useSelector } from "react-redux";
+import Cookies from "js-cookie";
 
 export default function ItemsTable({ items, onDeleteItem }) {
+  const selectedClient = useSelector((state) => state.client.selectedClient);
+  const client_name = selectedClient?.client_name || "";
+  const marka = selectedClient?.marka || "";
+
   const [genrate, setGenrate] = useState(false);
   const navigate = useNavigate();
-
+  
   const columns = [
     { key: "part_no", label: "Part No." },
     { key: "description", label: "Description" },
@@ -35,20 +41,14 @@ export default function ItemsTable({ items, onDeleteItem }) {
     }
   };
 
-  const getCookie = (name) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(";").shift();
-  };
-
   const handleMergeItems = async () => {
     try {
       await getCsrfToken();
-      const token = getCookie("csrftoken");
+      const token = Cookies.get("csrftoken");
 
       const res = await API.post(
         "/api/asstimate/genrate/",
-        {}, // empty body, modify if you need to send data
+        { client_name, marka },
         {
           headers: {
             "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export default function ItemsTable({ items, onDeleteItem }) {
   };
 
   const handleAsstimate = () => {
-    navigate("/asstimate");
+    navigate("/estimate");
   };
 
   return (

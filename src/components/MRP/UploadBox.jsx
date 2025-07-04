@@ -10,6 +10,7 @@ const UploadBox = ({ onUpload }) => {
     formData.append("file", file);
 
     try {
+      console.log("upload start")
       await API.post("/api/mrp/upload/", formData); // ✅ no need for full URL
       alert("Upload successful");
       onUpload(); // refresh data

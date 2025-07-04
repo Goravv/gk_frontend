@@ -1,31 +1,87 @@
-import { useState } from "react";
-import API from "../../api";
+import React, { useState } from "react";
+import API from "../../api"; // centralized axios instance
 import { useNavigate } from "react-router-dom";
+import Navbar2 from "../Navbar2";
+// import * as XLSX from "xlsx"; // 📦 SheetJS to read Excel
 
-export default function StockForm({ onSuccess = () => {} }) {
-  const navigate=useNavigate();
-  const [form, setForm] = useState({ part_no: "", description: "", qty: "" });
-  // const handleNavigation=()=>{
-  //   navigate("/row-packing-list");
-  // }
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await API.post("/api/packing/stock/", form);
-    setForm({ part_no: "", description: "", qty: "" });
-    navigate('/stock-list')
-    // onSuccess();
+const StockForm = ({ onUploadSuccess }) => {
+  const Navigate = useNavigate();
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleUpload = async () => {
+    if (!file) return alert("Please select an Excel file");
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        // 🔍 Parse Excel and log contents
+        // const data = new Uint8Array(e.target.result);
+        // const workbook = XLSX.read(data, { type: "array" });
+
+        // const sheetName = workbook.SheetNames[0];
+        // const worksheet = workbook.Sheets[sheetName];
+        // const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+        // console.log("📊 Excel File Content:", jsonData); // 👈 Preview in console
+
+        // ✅ Prepare file for upload
+        const formData = new FormData();
+        formData.append("file", file);
+
+        setLoading(true);
+        console.log("📤 Stock upload start...");
+
+        await API.post("/api/packing/stock/upload/", formData);
+        alert("✅ Stock Excel uploaded successfully");
+        setFile(null);
+
+        if (onUploadSuccess) onUploadSuccess();
+
+        try {
+          await API.post("/api/packing/packing/sync-stock/");
+          alert("🔄 Stock quantities synced.");
+        } catch (error) {
+          alert("❌ Sync failed: " + error.message);
+        }
+
+        Navigate("/stock-list");
+      } catch (error) {
+        console.error("❌ Error reading file:", error);
+        alert("Failed to read Excel file: " + error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    reader.readAsArrayBuffer(file); // Trigger file read
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 bg-white rounded shadow">
-      <h2 className="text-lg font-bold mb-2">Add Stock</h2>
-      <input className="border p-1 mb-2 w-full" placeholder="Part No" value={form.part_no}
-        onChange={(e) => setForm({ ...form, part_no: e.target.value })} />
-      <input className="border p-1 mb-2 w-full" placeholder="Description" value={form.description}
-        onChange={(e) => setForm({ ...form, description: e.target.value })} />
-      <input className="border p-1 mb-2 w-full" type="number" placeholder="Qty" value={form.qty}
-        onChange={(e) => setForm({ ...form, qty: e.target.value })} />
-      <button className="bg-blue-600 text-white px-3 py-1 rounded">Add</button>
-    </form>
+    <div>
+      <Navbar2 />
+      <div className="p-4 border rounded-md shadow-md bg-white dark:bg-gray-800 w-full max-w-md mx-auto">
+        <h2 className="text-xl font-semibold mb-4 text-center">
+          Upload Stock Excel
+        </h2>
+        <input
+          type="file"
+          accept=".xlsx, .xls"
+          onChange={(e) => setFile(e.target.files[0])}
+          className="mb-4 block w-full text-sm"
+        />
+        <button
+          className={`w-full px-4 py-2 text-white rounded ${
+            loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
+          }`}
+          onClick={handleUpload}
+          disabled={loading}
+        >
+          {loading ? "Uploading..." : "Upload Excel"}
+        </button>
+      </div>
+    </div>
   );
-}
+};
+
+export default StockForm;

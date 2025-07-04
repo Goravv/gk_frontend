@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import API from "../../api"; // Make sure this is correctly configured
-
+import Navbar2 from "../Navbar2";
+import { useSelector } from "react-redux";
+import Navbar from "../Navbar";
 export default function StockList() {
+  const client = useSelector((state) => {
+    return `${state.client.selectedClient?.client_name}--${state.client.selectedClient?.marka}`;
+  });
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -19,6 +24,7 @@ export default function StockList() {
 
   return (
     <div className="p-4 bg-white rounded shadow mt-4">
+      {client ? <Navbar2 /> : <Navbar />}
       <h2 className="text-lg font-bold mb-2">Stock List</h2>
       <table className="w-full table-auto border">
         <thead className="bg-gray-100">
@@ -26,14 +32,16 @@ export default function StockList() {
             <th className="border px-4 py-2">Part No</th>
             <th className="border px-4 py-2">Description</th>
             <th className="border px-4 py-2">Qty</th>
+            <th className="border px-4 py-2">Brand_name</th>
           </tr>
         </thead>
         <tbody>
-          {data.map(s => (
+          {data.map((s) => (
             <tr key={s.part_no} className="text-center">
               <td className="border px-4 py-2">{s.part_no}</td>
               <td className="border px-4 py-2">{s.description}</td>
               <td className="border px-4 py-2">{s.qty}</td>
+              <td className="border px-4 py-2">{s.brand_name}</td>
             </tr>
           ))}
         </tbody>

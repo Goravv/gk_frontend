@@ -15,7 +15,6 @@ const DataTable = ({ data, onDeleteAll }) => {
             <tr className="bg-gray-200">
               <th className="px-4 py-2">Item Code</th>
               <th className="px-4 py-2">Description</th>
-              <th className="px-4 py-2">Segment</th>
               <th className="px-4 py-2">MRP</th>
               <th className="px-4 py-2">HSN</th>
               <th className="px-4 py-2">GST %</th>

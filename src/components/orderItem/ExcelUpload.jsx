@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
-import API from '../../api'; // <-- Import your axios instance
+import API from '../../api'; 
+import { useSelector } from 'react-redux';
 
 export default function ExcelUpload({ onUploadSuccess }) {
   const [file, setFile] = useState(null);
+  const selectedClient = useSelector(state => state.client.selectedClient);
+  const client_name = selectedClient?.client_name || '';
+  const marka = selectedClient?.marka || '';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file) return alert('Please select a file');
+    if (!client_name || !marka) return alert('Client name and marka are required');
 
     const formData = new FormData();
     formData.append('file', file);
-    // formData.append('client_name', client_name); // add if needed
+    formData.append('client_name', client_name);
+    formData.append('marka', marka);
 
     try {
       const res = await API.post('/api/orderitem/upload-excel/', formData, {

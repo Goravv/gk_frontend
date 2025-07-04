@@ -1,11 +1,13 @@
 import React from 'react';
 import {useNavigate } from 'react-router-dom';
+import Navbar2 from '../Navbar2';
 
 function Packing() {
   const navigate = useNavigate();
 
   return (
     <div>
+      <Navbar2/>
     <div className="flex space-x-4 p-4 bg-gray-50 rounded shadow">
       <button
         onClick={() => navigate('/add-stock')}
@@ -38,14 +40,6 @@ function Packing() {
         Packing List
       </button>
     </div>
-    {/* <Routes>
-          <Route path="/add-stock" element={<StockForm />} />
-          <Route path="/add-packing" element={<PackingForm />} />
-          <Route path="/row-packing-list" element={<PackingList />} />
-          <Route path="/stock-list" element={<StockList />} />
-          <Route path="/packing-list" element={<DisplayPackingList />} />
-        </Routes> */}
-
     </div>
   );
 }
